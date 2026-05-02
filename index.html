@@ -214,14 +214,16 @@ body.is-loading .list-view .card:nth-child(n+7){animation-delay:.84s}
   min-width:0;
 }
 .brand__mark{
-  width:26px;height:26px;
+  width:32px;height:32px;
   object-fit:contain;
   display:block;
   flex-shrink:0;
-  transition:transform .15s ease,filter .15s ease;
+  padding:1px;
+  background:#fff;
+  border-radius:50%;
+  transition:transform .15s ease;
 }
 .brand:hover .brand__mark{transform:scale(.94)}
-[data-theme="dark"] .brand__mark{filter:invert(1) hue-rotate(180deg)}
 .brand__sep{
   color:var(--text-3);
   font-family:var(--mono);
