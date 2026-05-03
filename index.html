@@ -2644,7 +2644,9 @@ function matchEntry(d){
   return true;
 }
 function renderGrid(){
-  const ids = Object.keys(PROMPTS).filter(id=>matchEntry(PROMPTS[id]));
+  const ids = Object.keys(PROMPTS)
+    .filter(id=>matchEntry(PROMPTS[id]))
+    .sort((a,b)=>(PROMPTS[b].pick?1:0)-(PROMPTS[a].pick?1:0));
   if(!ids.length){
     grid.innerHTML = `<div class="grid__empty">검색 결과가 없습니다. 다른 키워드를 시도해 보세요.</div>`;
     return;
