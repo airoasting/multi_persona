@@ -4,14 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F5EFE6" />
-<title>Multi Persona Generator · AI ROASTING</title>
+<title>5-Color Harness · AI ROASTING</title>
 <meta name="description" content="하나의 프로젝트에 다섯 명의 전문가. 한 번 붙여넣으면 모든 초안이 5인 페르소나 검토를 거치는 프로젝트 지침 자동 생성기." />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="AI ROASTING" />
 <meta property="og:locale" content="ko_KR" />
-<meta property="og:title" content="하나의 프로젝트에, 다섯 명의 전문가 · Multi Persona Generator" />
+<meta property="og:title" content="하나의 프로젝트에, 다섯 명의 전문가 · 5-Color Harness" />
 <meta property="og:description" content="AI가 스스로 쓴 글을 평가하면 점수는 늘 후합니다. 한 번 설정해두면 이메일·보고서·강의 자료까지, 모든 초안이 다섯 시선의 검토를 거쳐 나옵니다." />
 <meta property="og:url" content="https://airoasting.github.io/multi_persona/" />
 <meta property="og:image" content="https://airoasting.github.io/multi_persona/assets/thumbnail.png" />
@@ -19,14 +19,14 @@
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="AI ROASTING Multi Persona Generator. BLACK 실행자, RED 의도, SILVER 구조, BLUE 톤, GOLD 독자 5인 페르소나." />
+<meta property="og:image:alt" content="AI ROASTING 5-Color Harness. BLACK 수행자, RED 이성, SILVER 분야 전문가, BLUE 공감, GOLD 보고 받는 이 5인 페르소나." />
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="하나의 프로젝트에, 다섯 명의 전문가" />
 <meta name="twitter:description" content="한 번 붙여넣으면 모든 초안이 5인 페르소나 검토를 거치는 프로젝트 지침 자동 생성기." />
 <meta name="twitter:image" content="https://airoasting.github.io/multi_persona/assets/thumbnail.png" />
-<meta name="twitter:image:alt" content="Multi Persona Generator 5인 페르소나 BLACK·RED·SILVER·BLUE·GOLD" />
+<meta name="twitter:image:alt" content="5-Color Harness 5인 페르소나 BLACK·RED·SILVER·BLUE·GOLD" />
 
 <link rel="icon" type="image/png" href="assets/thumbnail.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1331,7 +1331,7 @@ body.is-loading .list-view .card:nth-child(n+7){animation-delay:.84s}
       <img class="brand__mark" src="assets/logo1-transparent.png" alt="AI Roasting" />
       <span class="brand__mobile">AI ROASTING</span>
       <span class="brand__sep">/</span>
-      <span class="brand__name" id="brandLabel">Multi Persona Generator</span>
+      <span class="brand__name" id="brandLabel">5-Color Harness</span>
     </a>
     <div class="topbar__actions">
       <button type="button" class="icon-btn" id="themeToggle" aria-label="테마 전환">
@@ -1351,7 +1351,7 @@ body.is-loading .list-view .card:nth-child(n+7){animation-delay:.84s}
     <div class="hero">
       <div class="hero__folio">
         <span class="hero__mark">AI ROASTING</span>
-        <span class="hero__mark-sub">Multi Persona Generator</span>
+        <span class="hero__mark-sub">5-Color Harness</span>
         <span class="hero__tagline">프로젝트 지침 자동 생성기</span>
       </div>
       <div class="hero__body">
@@ -1457,7 +1457,7 @@ body.is-loading .list-view .card:nth-child(n+7){animation-delay:.84s}
 </main>
 
 <footer class="foot">
-  <div class="foot__brand"><strong>AI ROASTING</strong> · Multi Persona Generator</div>
+  <div class="foot__brand"><strong>AI ROASTING</strong> · 5-Color Harness</div>
   <div class="foot__copy">© 2026 AI ROASTING. All rights reserved.</div>
 </footer>
 
@@ -2298,7 +2298,7 @@ const PROMPTS = {
 
 const PERSONA_ROWS = ["black","red","silver","blue","gold"];
 const PERSONA_LABEL = {black:"BLACK",red:"RED",silver:"SILVER",blue:"BLUE",gold:"GOLD"};
-const PERSONA_ROLE = {black:"실행자",gold:"독자"};
+const PERSONA_ROLE = {black:"수행자",red:"이성",silver:"분야 전문가",blue:"공감",gold:"보고 받는 이"};
 
 /* SVG illustrations per domain. Use currentColor + linecap round. viewBox 120x80. */
 const CARD_ART = {
@@ -2395,14 +2395,14 @@ function buildPromptText(state){
 
   const castingLines = enabled.map(k=>{
     const p = ps[k];
-    if(k==="black") return `BLACK (${p.role||"실행자"}): ${p.text}`;
-    if(k==="gold")  return `GOLD (${p.role||"독자"}): ${p.text}`;
+    if(k==="black") return `BLACK (${p.role||"수행자"}): ${p.text}`;
+    if(k==="gold")  return `GOLD (${p.role||"보고 받는 이"}): ${p.text}`;
     return `${k.toUpperCase()} [${p.axis}]: ${p.watch}`;
   });
 
   const scoreLines = evalOrder.map(k=>{
     const p = ps[k];
-    if(k==="gold") return `  - GOLD ${p.role||"독자"}: X/10, [한줄]`;
+    if(k==="gold") return `  - GOLD ${p.role||"보고 받는 이"}: X/10, [한줄]`;
     return `  - ${k.toUpperCase()} [${p.axis}]: X/10, [한줄]`;
   });
 
@@ -2759,11 +2759,11 @@ function openDetail(id){
       gold:d.gold
     },
     personas:{
-      black:{enabled:true,role:"실행자",text:d.black},
+      black:{enabled:true,role:"수행자",text:d.black},
       red:  {enabled:true,axis:d.red.axis,watch:d.red.watch},
       silver:{enabled:true,axis:d.silver.axis,watch:d.silver.watch},
       blue: {enabled:true,axis:d.blue.axis,watch:d.blue.watch},
-      gold: {enabled:true,role:"독자",text:d.gold}
+      gold: {enabled:true,role:"보고 받는 이",text:d.gold}
     }
   };
 
@@ -2771,7 +2771,7 @@ function openDetail(id){
   detailTitle.innerHTML = d.title;
   detailLead.textContent = d.subhead;
 
-  setBrandLabel("Multi Persona Generator");
+  setBrandLabel("5-Color Harness");
 
   copyBtn.classList.remove("is-copied");
   copyLabel.textContent = "복사";
@@ -2794,7 +2794,7 @@ function backToList(){
   detail.classList.remove("is-active");
   detail.setAttribute("aria-hidden","true");
   listView.classList.remove("is-hidden");
-  setBrandLabel("Multi Persona Generator");
+  setBrandLabel("5-Color Harness");
   currentDomainId = null;
   detailState = null;
   currentPromptText = "";
