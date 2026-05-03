@@ -643,6 +643,47 @@ body.is-loading .list-view .card:nth-child(n+7){animation-delay:.84s}
   background:var(--text-3);opacity:.6;
 }
 .card__head .cat{color:var(--text-3)}
+.card__pick-toggle{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-left:auto;
+  padding:4px 10px 4px 8px;
+  border-radius:9999px;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text-3);
+  font-family:var(--mono);
+  font-size:10px;font-weight:700;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  line-height:1;
+  white-space:nowrap;
+  cursor:pointer;
+  user-select:none;
+  transition:background .15s ease, color .15s ease, border-color .15s ease;
+}
+.card__pick-toggle:hover{
+  background:var(--card-hover);
+  border-color:var(--text-3);
+  color:var(--text-2);
+}
+.card__pick-toggle.is-on{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--accent-fg);
+}
+.card__pick-toggle.is-on:hover{
+  background:var(--accent-deep);
+  border-color:var(--accent-deep);
+}
+.card__pick-toggle:focus-visible{
+  outline:2px solid var(--text);
+  outline-offset:2px;
+}
+.card__pick-toggle .card__pick-star{
+  font-size:11px;
+  letter-spacing:0;
+  line-height:1;
+}
 .card__folio{
   font-family:var(--mono);
   font-size:10.5px;font-weight:500;
@@ -1516,6 +1557,7 @@ const PROMPTS = {
   },
   p5:{
     pick:true,
+    pickOrder:4,
     folio:"I·5",
     cat:"외부 커뮤니케이션",
     title:"<em>뉴스레터</em>",
@@ -1649,6 +1691,7 @@ const PROMPTS = {
   },
   p15:{
     pick:true,
+    pickOrder:3,
     folio:"II·5",
     cat:"소셜미디어·글쓰기",
     title:"<em>신문 칼럼</em>",
@@ -1758,9 +1801,10 @@ const PROMPTS = {
   },
   p24:{
     pick:true,
+    pickOrder:1,
     folio:"IV·2",
     cat:"분석·보고서",
-    title:"<em>보고서</em> (분석)",
+    title:"<em>분석</em> 보고서",
     subhead:"통찰 한 줄·반대 케이스. 경영진 요약 한 페이지로 핵심 다 전달.",
     black:"리서치 디렉터 18년차+ (맥킨지 인사이트·BCG 퍼스펙티브 톤). 톤 \"통찰 한 줄·반대 케이스\". 데이터 나열로 끝남 금지. 분량 3~10페이지, 5000~15000자. 종결 체 본문 `~이다` 체. 결론은 메모 톤(단정형 + 행동 동사 + 주체 명시).",
     red:{axis:"이성: 통찰의 새로움·근거 정합성",watch:"산업 애널리스트 22년차+가 통찰 한 줄의 새로움과 인과 정합성·반대 케이스 견딤을 본다. 어휘 \"통찰·각도·전제·반증\". 마무리 패턴 \"데이터만 있다.\" 합격선: 통찰 한 줄을 다른 회사 의사결정자가 인용."},
@@ -1975,9 +2019,10 @@ const PROMPTS = {
   },
   p41:{
     pick:true,
+    pickOrder:2,
     folio:"V·1",
     cat:"의사결정·전략",
-    title:"<em>임원 보고</em> PPT (덱)",
+    title:"<em>임원용</em> PPT",
     subhead:"액션 타이틀·한 장 한 메시지. 5분에 결정.",
     black:"컨설팅펌 출신 사내 전략기획 디렉터 17년차+ (베인·맥킨지 임원 덱 톤). 톤 \"액션 타이틀·한 장 한 메시지\". 명사형 헤드라인 금지, 강조 색 두 개 초과 금지. 분량 8~15장, 헤드라인 30자·본문 50자 이내. 종결 체 헤드라인 `~함·~임` 명사형. 본문 `~이다` 체.",
     red:{axis:"이성: 결론 한 줄·근거 인과 정합성",watch:"컨설팅 파트너 22년차+가 헤드라인만 한 줄씩 읽었을 때 결론·근거의 인과가 흐르는지를 본다. 어휘 \"결론·근거·전제·인과\". 마무리 패턴 \"스토리 끊김.\" 합격선: 헤드라인만 읽고 의사결정 가능."},
@@ -2288,6 +2333,7 @@ const PROMPTS = {
   },
   p68:{
     pick:true,
+    pickOrder:5,
     folio:"X·5",
     cat:"커리어·상담",
     title:"<em>리더 심리</em> 상담",
@@ -2646,7 +2692,17 @@ function matchEntry(d){
 function renderGrid(){
   const ids = Object.keys(PROMPTS)
     .filter(id=>matchEntry(PROMPTS[id]))
-    .sort((a,b)=>(PROMPTS[b].pick?1:0)-(PROMPTS[a].pick?1:0));
+    .sort((a,b)=>{
+      const pa = PROMPTS[a].pick?1:0;
+      const pb = PROMPTS[b].pick?1:0;
+      if(pa!==pb) return pb-pa;
+      if(pa===1){
+        const oa = PROMPTS[a].pickOrder ?? 999;
+        const ob = PROMPTS[b].pickOrder ?? 999;
+        if(oa!==ob) return oa-ob;
+      }
+      return 0;
+    });
   if(!ids.length){
     grid.innerHTML = `<div class="grid__empty">검색 결과가 없습니다. 다른 키워드를 시도해 보세요.</div>`;
     return;
@@ -2658,7 +2714,7 @@ function renderGrid(){
       <button type="button" class="card${d.pick?' is-pick':''}" data-id="${id}" aria-label="${escapeHtml(stripHtml(d.title))} 열기">
         <div class="card__head">
           <span class="cat">${escapeHtml(d.cat)}</span>
-          ${d.pick?`<span class="card__pick"><span class="card__pick-star">★</span>PICK</span>`:""}
+          <span class="card__pick-toggle${d.pick?' is-on':''}" role="button" tabindex="0" data-pick-id="${id}" aria-pressed="${d.pick?'true':'false'}" aria-label="${d.pick?'Pick 해제':'Pick에 추가'}"><span class="card__pick-star" aria-hidden="true">${d.pick?'★':'☆'}</span>${d.pick?'PICK':'PICK'}</span>
         </div>
         <h3 class="card__title"><span class="card__num">${num}</span>${wrapTitleChars(d.title)}</h3>
         <p class="card__sub">${escapeHtml(d.subhead || "")}</p>
@@ -2678,9 +2734,48 @@ function renderGrid(){
     `;
   }).join("");
   grid.querySelectorAll(".card").forEach(card=>{
-    card.addEventListener("click",()=>openDetail(card.dataset.id));
+    card.addEventListener("click",(e)=>{
+      if(e.target.closest(".card__pick-toggle")) return;
+      openDetail(card.dataset.id);
+    });
+  });
+  grid.querySelectorAll(".card__pick-toggle").forEach(el=>{
+    const handler = (e)=>{
+      e.stopPropagation();
+      e.preventDefault();
+      const id = el.dataset.pickId;
+      if(!PROMPTS[id]) return;
+      PROMPTS[id].pick = !PROMPTS[id].pick;
+      saveUserPicks();
+      renderGrid();
+    };
+    el.addEventListener("click", handler);
+    el.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " "){
+        handler(e);
+      }
+    });
   });
 }
+
+const PICKS_KEY = "5color.userPicks.v1";
+function saveUserPicks(){
+  try{
+    const ids = Object.keys(PROMPTS).filter(k=>PROMPTS[k].pick);
+    localStorage.setItem(PICKS_KEY, JSON.stringify(ids));
+  }catch(_){}
+}
+function loadUserPicks(){
+  try{
+    const stored = localStorage.getItem(PICKS_KEY);
+    if(!stored) return;
+    const ids = JSON.parse(stored);
+    if(!Array.isArray(ids)) return;
+    Object.keys(PROMPTS).forEach(k=>{ PROMPTS[k].pick = false; });
+    ids.forEach(id=>{ if(PROMPTS[id]) PROMPTS[id].pick = true; });
+  }catch(_){}
+}
+loadUserPicks();
 
 /* ============ DETAIL ============ */
 function buildPersonaList(){
